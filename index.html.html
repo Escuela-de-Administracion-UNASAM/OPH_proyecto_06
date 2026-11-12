@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Matriz de Consistencia y Planteamiento Metodológico - UNASAM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                    },
+                    colors: {
+                        unasam: {
+                            navy: '#0B2545',
+                            blue: '#134074',
+                            steel: '#13315C',
+                            sky: '#8DA9C4',
+                            gold: '#D4AF37',
+                            goldLight: '#F3E5AB',
+                            cream: '#EEF4ED'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos personalizados y reglas de impresión limpia */
+        body {
+            background-color: #F4F7FA;
+            color: #1E293B;
+        }
+        
+        /* Scrollbar sutil */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Estilos de impresión (@media print) */
+        @media print {
+            body {
+                background-color: #FFFFFF !important;
+                color: #000000 !important;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .main-grid {
+                display: block !important;
+            }
+            .output-panel {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .card-section {
+                break-inside: avoid;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: none !important;
+                margin-bottom: 1rem !important;
+            }
+            table.matrix-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 9pt !important;
+            }
+            table.matrix-table th, table.matrix-table td {
+                border: 1px solid #334155 !important;
+                padding: 6px !important;
+            }
+            header.app-header {
+                background: #0B2545 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased">
+
+    <!-- Notificación Toast (Reemplazo seguro de alert) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none no-print">
+        <div class="bg-unasam-navy text-white px-5 py-3 rounded-xl shadow-xl border border-unasam-gold/40 flex items-center gap-3">
+            <svg id="toast-icon" class="w-5 h-5 text-unasam-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="toast-message" class="text-sm font-medium">Acción completada</span>
+        </div>
+    </div>
+
+    <!-- Encabezado Institucional -->
+    <header class="app-header bg-gradient-to-r from-unasam-navy via-unasam-steel to-unasam-blue text-white shadow-lg border-b-4 border-unasam-gold">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <!-- Emblema Académico SVG -->
+                    <div class="w-12 h-12 rounded-xl bg-white/10 backdrop-blur-sm border border-unasam-gold/50 flex items-center justify-center shrink-0 shadow-inner">
+                        <svg class="w-7 h-7 text-unasam-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-unasam-gold/20 text-unasam-goldLight border border-unasam-gold/30">UNASAM • Investigación Cuantitativa</span>
+                            <span class="text-xs text-slate-300 hidden sm:inline">Enfoque Bivariado (2 Variables)</span>
+                        </div>
+                        <h1 class="text-lg sm:text-xl font-bold tracking-tight mt-0.5 text-white">
+                            Generador de Matriz de Consistencia y Planteamiento Metodológico
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Botones Rápidos -->
+                <div class="flex flex-wrap items-center gap-2 no-print">
+                    <button type="button" onclick="loadExampleData()" class="px-3.5 py-2 rounded-lg bg-unasam-gold hover:bg-amber-400 text-unasam-navy font-semibold text-xs sm:text-sm transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        Cargar Ejemplo UNASAM
+                    </button>
+                    <button type="button" onclick="resetForm()" class="px-3.5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white border border-white/20 font-medium text-xs sm:text-sm transition flex items-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        Limpiar todo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal Dividido -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="main-grid grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- PANEL IZQUIERDO: FORMULARIO DE CONFIGURACIÓN (5 columnas en lg) -->
+            <section class="lg:col-span-5 space-y-5 no-print">
+                
+                <!-- 1. Configuración Metodológica -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 px-5 py-3.5 border-b border-slate-200 flex items-center justify-between">
+                        <h2 class="font-bold text-unasam-navy text-sm uppercase tracking-wide flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-unasam-navy text-white text-xs flex items-center justify-center font-bold">1</span>
+                            Configuración Metodológica
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <!-- Autor / Enfoque Metodológico -->
+                        <div>
+                            <label for="methodAuthor" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                                Autor / Referente Metodológico
+                            </label>
+                            <select id="methodAuthor" onchange="updateOutputs()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-unasam-blue focus:ring-2 focus:ring-unasam-blue/20 outline-none transition">
+                                <option value="Arístides Vara Horna (2012)">Arístides Vara Horna (2012) — 7 Pasos para una Tesis Exitosa</option>
+                                <option value="Hernández-Sampieri et al.">Hernández-Sampieri et al. — Metodología de la Investigación</option>
+                                <option value="C. Vara">C. Vara — Enfoque Cuantitativo Aplicado</option>
+                                <option value="Luis Villanueva">Luis Villanueva — Guía de Investigación Universitaria</option>
+                            </select>
+                        </div>
+
+                        <!-- Alcance / Nivel de Investigación -->
+                        <div>
+                            <label for="researchScope" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                                Alcance / Nivel de Investigación (Bivariado)
+                            </label>
+                            <select id="researchScope" onchange="updateOutputs()" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-unasam-blue focus:ring-2 focus:ring-unasam-blue/20 outline-none transition">
+                                <option value="correlacional">Correlacional (Bivariado — Relación / Asociación)</option>
+                                <option value="causal">Descriptivo - Explicativo / Causal (Bivariado — Influencia / Incidencia)</option>
+                                <option value="descriptivo">Descriptivo Comparativo / Diagnóstico (2 variables sin cruce causal)</option>
+                            </select>
+                            <p id="scopeHint" class="text-xs text-slate-500 mt-1.5 italic">
+                                Evalúa el grado de asociación entre V1 y V2 sin atribuir causalidad directa.
+                            </p>
+                        </div>
+
+                        <!-- Verbos de Objetivos -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="verbGeneral" class="block text-xs font-semibold text-slate-700 mb-1">Verbo Obj. General</label>
+                                <select id="verbGeneral" onchange="updateOutputs()" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                                    <option value="Determinar">Determinar</option>
+                                    <option value="Establecer">Establecer</option>
+                                    <option value="Analizar">Analizar</option>
+                                    <option value="Evaluar">Evaluar</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="verbSpecific" class="block text-xs font-semibold text-slate-700 mb-1">Verbo Obj. Específicos</label>
+                                <select id="verbSpecific" onchange="updateOutputs()" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                                    <option value="Determinar">Determinar</option>
+                                    <option value="Identificar">Identificar</option>
+                                    <option value="Establecer">Establecer</option>
+                                    <option value="Evaluar">Evaluar</option>
+                                    <option value="Precisar">Precisar</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Interruptor de Dirección de Cruce -->
+                        <div id="crossDirectionContainer" class="pt-2 border-t border-slate-100">
+                            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
+                                Regla de Cruce de Dimensiones (Específicos)
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                    <input type="radio" name="crossDirection" value="v1_to_d2" checked onchange="updateOutputs()" class="mt-0.5 text-unasam-blue focus:ring-unasam-blue">
+                                    <div class="text-xs">
+                                        <span class="font-bold text-slate-800 block">Estándar: Variable 1 (General) × Dimensiones de V2</span>
+                                        <span class="text-slate-500">Cruza V1 completa contra D2.1, D2.2, D2.3... (Recomendado)</span>
+                                    </div>
+                                </label>
+                                <label class="flex items-start gap-2.5 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                                    <input type="radio" name="crossDirection" value="d1_to_v2" onchange="updateOutputs()" class="mt-0.5 text-unasam-blue focus:ring-unasam-blue">
+                                    <div class="text-xs">
+                                        <span class="font-bold text-slate-800 block">Inverso: Dimensiones de V1 × Variable 2 (General)</span>
+                                        <span class="text-slate-500">Cruza D1.1, D1.2, D1.3... contra V2 completa</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Datos de las Variables y Sustento Teórico -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 px-5 py-3.5 border-b border-slate-200">
+                        <h2 class="font-bold text-unasam-navy text-sm uppercase tracking-wide flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-unasam-navy text-white text-xs flex items-center justify-center font-bold">2</span>
+                            Variables y Sustento Teórico
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-6">
+                        
+                        <!-- VARIABLE 1 -->
+                        <div class="p-4 rounded-xl bg-blue-50/50 border border-blue-100 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-unasam-blue bg-blue-100 px-2.5 py-1 rounded-md">Variable 1 (V1)</span>
+                                <span id="v1RoleBadge" class="text-[11px] font-medium text-slate-500">Variable Asociada 1</span>
+                            </div>
+                            <div>
+                                <label for="v1Name" class="block text-xs font-semibold text-slate-700 mb-1">Nombre de la Variable 1 *</label>
+                                <input type="text" id="v1Name" oninput="updateOutputs()" placeholder="Ej. Clima organizacional" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue focus:ring-2 focus:ring-unasam-blue/20 outline-none">
+                            </div>
+                            <div>
+                                <label for="v1Author" class="block text-xs font-semibold text-slate-700 mb-1">Autor / Modelo Teórico que sustenta sus dimensiones *</label>
+                                <input type="text" id="v1Author" oninput="updateOutputs()" placeholder="Ej. Litwin y Stringer (1968)" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue focus:ring-2 focus:ring-unasam-blue/20 outline-none">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="block text-xs font-semibold text-slate-700">Dimensiones de Variable 1</label>
+                                    <button type="button" onclick="addDimension('v1')" class="text-xs font-semibold text-unasam-blue hover:text-unasam-navy flex items-center gap-1 cursor-pointer">
+                                        <span>+ Agregar dimensión</span>
+                                    </button>
+                                </div>
+                                <div id="v1DimensionsList" class="space-y-2">
+                                    <!-- Se llena dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VARIABLE 2 -->
+                        <div class="p-4 rounded-xl bg-amber-50/40 border border-amber-200/70 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-extrabold uppercase tracking-wider text-amber-800 bg-amber-100 px-2.5 py-1 rounded-md">Variable 2 (V2)</span>
+                                <span id="v2RoleBadge" class="text-[11px] font-medium text-slate-500">Variable Asociada 2</span>
+                            </div>
+                            <div>
+                                <label for="v2Name" class="block text-xs font-semibold text-slate-700 mb-1">Nombre de la Variable 2 *</label>
+                                <input type="text" id="v2Name" oninput="updateOutputs()" placeholder="Ej. Desempeño laboral" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue focus:ring-2 focus:ring-unasam-blue/20 outline-none">
+                            </div>
+                            <div>
+                                <label for="v2Author" class="block text-xs font-semibold text-slate-700 mb-1">Autor / Modelo Teórico que sustenta sus dimensiones *</label>
+                                <input type="text" id="v2Author" oninput="updateOutputs()" placeholder="Ej. Chiavenato (2011)" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue focus:ring-2 focus:ring-unasam-blue/20 outline-none">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="block text-xs font-semibold text-slate-700">Dimensiones de Variable 2</label>
+                                    <button type="button" onclick="addDimension('v2')" class="text-xs font-semibold text-amber-800 hover:text-amber-950 flex items-center gap-1 cursor-pointer">
+                                        <span>+ Agregar dimensión</span>
+                                    </button>
+                                </div>
+                                <div id="v2DimensionsList" class="space-y-2">
+                                    <!-- Se llena dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 3. Delimitación Espacial, Temporal y Poblacional -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 px-5 py-3.5 border-b border-slate-200">
+                        <h2 class="font-bold text-unasam-navy text-sm uppercase tracking-wide flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full bg-unasam-navy text-white text-xs flex items-center justify-center font-bold">3</span>
+                            Delimitación (Reglas de Vara Horna)
+                        </h2>
+                    </div>
+                    <div class="p-5 space-y-3.5">
+                        <div>
+                            <label for="population" class="block text-xs font-semibold text-slate-700 mb-1">Población / Unidad de Análisis</label>
+                            <input type="text" id="population" oninput="updateOutputs()" placeholder="Ej. colaboradores administrativos" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                        </div>
+                        <div>
+                            <label for="organization" class="block text-xs font-semibold text-slate-700 mb-1">Organización / Empresa / Sector</label>
+                            <input type="text" id="organization" oninput="updateOutputs()" placeholder="Ej. de la Municipalidad Provincial de Huaraz" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="location" class="block text-xs font-semibold text-slate-700 mb-1">Lugar / Ubicación</label>
+                                <input type="text" id="location" oninput="updateOutputs()" placeholder="Ej. Huaraz" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                            </div>
+                            <div>
+                                <label for="year" class="block text-xs font-semibold text-slate-700 mb-1">Año / Periodo</label>
+                                <input type="text" id="year" oninput="updateOutputs()" placeholder="Ej. 2026" class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- PANEL DERECHO: RESULTADOS Y MATRIZ EN TIEMPO REAL (7 columnas en lg) -->
+            <section class="output-panel lg:col-span-7 space-y-5">
+                
+                <!-- Barra de Herramientas de Salida y Pestañas -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-3 flex flex-wrap items-center justify-between gap-3 no-print">
+                    <div class="flex items-center bg-slate-100 p-1 rounded-xl">
+                        <button type="button" id="tabBtnDocument" onclick="switchTab('document')" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-unasam-navy shadow-sm transition cursor-pointer">
+                            Planteamiento Detallado
+                        </button>
+                        <button type="button" id="tabBtnMatrix" onclick="switchTab('matrix')" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-unasam-navy transition cursor-pointer">
+                            Tabla Matriz de Consistencia
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="copyAllToClipboard()" class="px-3.5 py-2 rounded-xl bg-unasam-navy hover:bg-unasam-blue text-white text-xs font-semibold transition flex items-center gap-1.5 shadow-sm cursor-pointer">
+                            <svg class="w-4 h-4 text-unasam-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                            Copiar Todo
+                        </button>
+                        <button type="button" onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer">
+                            <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            Imprimir / PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- VISTA 1: PLANTEAMIENTO DETALLADO -->
+                <div id="viewDocument" class="space-y-5">
+                    
+                    <!-- Nota de Sustento Teórico (Blindaje ante el jurado) -->
+                    <div class="card-section bg-gradient-to-r from-unasam-navy to-unasam-steel text-white rounded-2xl p-5 shadow-sm border border-unasam-blue">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2 rounded-lg bg-unasam-gold/20 text-unasam-gold shrink-0 mt-0.5">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </div>
+                            <div class="space-y-1">
+                                <h3 class="text-xs font-bold uppercase tracking-wider text-unasam-gold">Respaldo Teórico y Metodológico (Defensa ante Jurado)</h3>
+                                <p id="theoreticalSupportOutput" class="text-xs sm:text-sm text-slate-100 leading-relaxed">
+                                    Completa los datos de las variables y autores para generar la nota de sustento.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Título del Proyecto -->
+                    <div class="card-section bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-unasam-navy flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-unasam-gold"></span>
+                                Título Tentativo del Proyecto de Tesis
+                            </span>
+                            <span id="titleWordCountBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                0 palabras
+                            </span>
+                        </div>
+                        <p id="generatedTitle" class="font-serif text-base sm:text-lg font-bold text-slate-900 leading-snug p-3.5 bg-slate-50 rounded-xl border border-slate-200/80">
+                            —
+                        </p>
+                        <p id="titleAdvice" class="text-[11px] text-slate-500 mt-2">
+                            * Según Arístides Vara Horna, un título bien delimitado debe ser conciso (idealmente entre 15 y 22 palabras) e incluir variables, población, lugar y tiempo.
+                        </p>
+                    </div>
+
+                    <!-- Formulación del Problema -->
+                    <div class="card-section bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-unasam-navy border-b border-slate-100 pb-2">
+                            1. Formulación del Problema
+                        </h3>
+                        
+                        <div>
+                            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-unasam-blue bg-blue-50 px-2 py-0.5 rounded mb-1">Problema General (PG)</span>
+                            <p id="generalProblemOutput" class="text-sm font-medium text-slate-800 leading-relaxed bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                                —
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded mb-2">Problemas Específicos (PE)</span>
+                            <div id="specificProblemsOutput" class="space-y-2">
+                                <!-- Dinámico -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Objetivos de la Investigación -->
+                    <div class="card-section bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                        <h3 class="text-sm font-extrabold uppercase tracking-wider text-unasam-navy border-b border-slate-100 pb-2">
+                            2. Objetivos de la Investigación
+                        </h3>
+                        
+                        <div>
+                            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-unasam-blue bg-blue-50 px-2 py-0.5 rounded mb-1">Objetivo General (OG)</span>
+                            <p id="generalObjectiveOutput" class="text-sm font-medium text-slate-800 leading-relaxed bg-slate-50/70 p-3 rounded-xl border border-slate-100">
+                                —
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded mb-2">Objetivos Específicos (OE)</span>
+                            <div id="specificObjectivesOutput" class="space-y-2">
+                                <!-- Dinámico -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hipótesis de Investigación (Hi y H0) -->
+                    <div class="card-section bg-white rounded-2xl shadow-sm border border-slate-200 p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                            <h3 class="text-sm font-extrabold uppercase tracking-wider text-unasam-navy">
+                                3. Hipótesis de Investigación (H<sub>i</sub> y H<sub>0</sub>)
+                            </h3>
+                            <span class="text-[11px] font-medium text-slate-500">Contrastación Estadística</span>
+                        </div>
+                        
+                        <!-- Hipótesis General -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2.5">
+                            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-unasam-navy bg-unasam-goldLight/60 px-2 py-0.5 rounded">Nivel General</span>
+                            <div class="space-y-1.5 text-sm">
+                                <p class="text-slate-800"><strong class="text-unasam-blue font-bold">H<sub>i</sub> (Hipótesis de Investigación):</strong> <span id="generalHiOutput">—</span></p>
+                                <p class="text-slate-600"><strong class="text-slate-700 font-bold">H<sub>0</sub> (Hipótesis Nula):</strong> <span id="generalH0Output">—</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Hipótesis Específicas -->
+                        <div>
+                            <span class="inline-block text-[11px] font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-2 py-0.5 rounded mb-2">Nivel Específico</span>
+                            <div id="specificHypothesesOutput" class="space-y-3">
+                                <!-- Dinámico -->
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- VISTA 2: TABLA MATRIZ DE CONSISTENCIA -->
+                <div id="viewMatrix" class="hidden space-y-4">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 overflow-hidden">
+                        <div class="mb-4">
+                            <span class="text-xs font-bold uppercase tracking-wider text-unasam-gold">Cuadro Resumen Metodológico</span>
+                            <h3 class="text-base font-bold text-unasam-navy mt-0.5" id="matrixTitleHeader">Matriz de Consistencia</h3>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="matrix-table w-full text-left border-collapse border border-slate-300 text-xs">
+                                <thead>
+                                    <tr class="bg-unasam-navy text-white">
+                                        <th class="border border-slate-400 p-2.5 w-1/4 font-bold">PROBLEMAS</th>
+                                        <th class="border border-slate-400 p-2.5 w-1/4 font-bold">OBJETIVOS</th>
+                                        <th class="border border-slate-400 p-2.5 w-1/4 font-bold">HIPÓTESIS (H<sub>i</sub> / H<sub>0</sub>)</th>
+                                        <th class="border border-slate-400 p-2.5 w-1/4 font-bold">VARIABLES Y DIMENSIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="matrixTableBody" class="align-top text-slate-800">
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- Pie de página institucional obligatorio -->
+    <footer class="bg-unasam-navy text-white border-t-4 border-unasam-gold mt-10 py-5 px-4 text-center">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs sm:text-sm">
+            <p class="font-semibold text-unasam-goldLight">
+                Desarrollado por Luis Fernando Cacha Maguiña — Escuela Profesional de Administración y Turismo, UNASAM
+            </p>
+            <p class="text-slate-300 text-xs">
+                Basado en estándares metodológicos de Arístides Vara Horna & Hernández-Sampieri et al.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Estado inicial de dimensiones
+        let state = {
+            v1Dimensions: [
+                "Estructura organizacional",
+                "Responsabilidad y autonomía",
+                "Recompensa y reconocimiento",
+                "Relaciones interpersonales"
+            ],
+            v2Dimensions: [
+                "Productividad laboral",
+                "Calidad del trabajo",
+                "Iniciativa y compromiso"
+            ]
+        };
+
+        // Función auxiliar para capitalizar o poner en minúscula la primera letra manteniendo siglas
+        function formatVarText(text, lowercaseFirst = true) {
+            if (!text) return "";
+            const trimmed = text.trim();
+            if (!lowercaseFirst) {
+                return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+            }
+            // Si la segunda letra es mayúscula (ej. TIC, ISO, SUNAT), conservar mayúsculas
+            if (trimmed.length > 1 && trimmed.charAt(1) === trimmed.charAt(1).toUpperCase() && /[A-ZÁÉÍÓÚÑ]/.test(trimmed.charAt(1))) {
+                return trimmed;
+            }
+            return trimmed.charAt(0).toLowerCase() + trimmed.slice(1);
+        }
+
+        // Construir frase de delimitación limpia
+        function buildDelimitation() {
+            const pop = document.getElementById('population').value.trim();
+            const org = document.getElementById('organization').value.trim();
+            const loc = document.getElementById('location').value.trim();
+            const yr = document.getElementById('year').value.trim();
+
+            let parts = [];
+            if (pop) {
+                // Evitar doble "en los" o "de los"
+                const startsWithPrep = /^(en|de|del|los|las)\s+/i.test(pop);
+                parts.push(startsWithPrep ? pop : `en ${formatVarText(pop, true)}`);
+            }
+            if (org) {
+                const startsWithPrep = /^(de|del|en)\s+/i.test(org);
+                parts.push(startsWithPrep ? org : `de ${org}`);
+            }
+            
+            let geoTime = [];
+            if (loc) geoTime.push(loc);
+            if (yr) geoTime.push(yr);
+
+            let result = parts.join(' ');
+            if (geoTime.length > 0) {
+                result += (result ? ', ' : 'en ') + geoTime.join(', ');
+            }
+            return result || '[contexto poblacional, espacial y temporal]';
+        }
+
+        // Renderizar listas de dimensiones en el formulario
+        function renderDimensionInputs() {
+            const v1Container = document.getElementById('v1DimensionsList');
+            const v2Container = document.getElementById('v2DimensionsList');
+
+            v1Container.innerHTML = state.v1Dimensions.map((dim, idx) => `
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-unasam-blue w-8 shrink-0">D1.${idx + 1}</span>
+                    <input type="text" value="${escapeHtml(dim)}" oninput="updateDimension('v1', ${idx}, this.value)" 
+                        placeholder="Dimensión ${idx + 1} de V1"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                    <button type="button" onclick="removeDimension('v1', ${idx})" title="Eliminar dimensión"
+                        class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            `).join('');
+
+            v2Container.innerHTML = state.v2Dimensions.map((dim, idx) => `
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-amber-800 w-8 shrink-0">D2.${idx + 1}</span>
+                    <input type="text" value="${escapeHtml(dim)}" oninput="updateDimension('v2', ${idx}, this.value)" 
+                        placeholder="Dimensión ${idx + 1} de V2"
+                        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs sm:text-sm text-slate-800 focus:border-unasam-blue outline-none">
+                    <button type="button" onclick="removeDimension('v2', ${idx})" title="Eliminar dimensión"
+                        class="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-red-50 transition cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addDimension(variableKey) {
+            if (variableKey === 'v1') {
+                state.v1Dimensions.push('');
+            } else {
+                state.v2Dimensions.push('');
+            }
+            renderDimensionInputs();
+            updateOutputs();
+        }
+
+        function removeDimension(variableKey, index) {
+            if (variableKey === 'v1') {
+                if (state.v1Dimensions.length <= 1) {
+                    showToast('Se recomienda mantener al menos 1 dimensión en Variable 1.');
+                    return;
+                }
+                state.v1Dimensions.splice(index, 1);
+            } else {
+                if (state.v2Dimensions.length <= 1) {
+                    showToast('Se recomienda mantener al menos 1 dimensión en Variable 2.');
+                    return;
+                }
+                state.v2Dimensions.splice(index, 1);
+            }
+            renderDimensionInputs();
+            updateOutputs();
+        }
+
+        function updateDimension(variableKey, index, value) {
+            if (variableKey === 'v1') {
+                state.v1Dimensions[index] = value;
+            } else {
+                state.v2Dimensions[index] = value;
+            }
+            updateOutputs();
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        // Lógica principal de generación metodológica
+        function updateOutputs() {
+            const methodAuthor = document.getElementById('methodAuthor').value;
+            const scope = document.getElementById('researchScope').value;
+            const verbGen = document.getElementById('verbGeneral').value;
+            const verbSpec = document.getElementById('verbSpecific').value;
+            const crossDir = document.querySelector('input[name="crossDirection"]:checked').value;
+
+            const v1Raw = document.getElementById('v1Name').value.trim() || 'Variable 1';
+            const v1Author = document.getElementById('v1Author').value.trim() || 'Autor teórico V1 no especificado';
+            const v2Raw = document.getElementById('v2Name').value.trim() || 'Variable 2';
+            const v2Author = document.getElementById('v2Author').value.trim() || 'Autor teórico V2 no especificado';
+
+            const v1Lower = formatVarText(v1Raw, true);
+            const v1Cap = formatVarText(v1Raw, false);
+            const v2Lower = formatVarText(v2Raw, true);
+            const v2Cap = formatVarText(v2Raw, false);
+
+            const delimitation = buildDelimitation();
+
+            // Actualizar etiquetas según alcance
+            const scopeHint = document.getElementById('scopeHint');
+            const v1Badge = document.getElementById('v1RoleBadge');
+            const v2Badge = document.getElementById('v2RoleBadge');
+            const crossContainer = document.getElementById('crossDirectionContainer');
+
+            if (scope === 'correlacional') {
+                scopeHint.textContent = 'Evalúa el grado de asociación o relación estadística entre V1 y V2 sin atribuir causalidad directa.';
+                v1Badge.textContent = 'Variable Asociada 1';
+                v2Badge.textContent = 'Variable Asociada 2';
+                crossContainer.classList.remove('opacity-50', 'pointer-events-none');
+            } else if (scope === 'causal') {
+                scopeHint.textContent = 'Evalúa la influencia, incidencia o efecto de la Variable Independiente (V1) sobre la Variable Dependiente (V2).';
+                v1Badge.textContent = 'Variable Independiente (X)';
+                v2Badge.textContent = 'Variable Dependiente (Y)';
+                crossContainer.classList.remove('opacity-50', 'pointer-events-none');
+            } else {
+                scopeHint.textContent = 'Describe y diagnostica el nivel o comportamiento de ambas variables y sus dimensiones sin cruzarlas.';
+                v1Badge.textContent = 'Variable de Estudio 1';
+                v2Badge.textContent = 'Variable de Estudio 2';
+                crossContainer.classList.add('opacity-50', 'pointer-events-none');
+            }
+
+            // 1. Nota de Sustento Teórico
+            const validD1 = state.v1Dimensions.filter(d => d.trim() !== '');
+            const validD2 = state.v2Dimensions.filter(d => d.trim() !== '');
+            
+            document.getElementById('theoreticalSupportOutput').innerHTML = `
+                Diseño estructurado bajo los lineamientos metodológicos de <strong>${escapeHtml(methodAuthor)}</strong>. 
+                La operacionalización de <strong>${escapeHtml(v1Cap)}</strong> (${validD1.length} dimensiones) se respalda teóricamente en <strong>${escapeHtml(v1Author)}</strong>, 
+                mientras que <strong>${escapeHtml(v2Cap)}</strong> (${validD2.length} dimensiones) se sustenta en el modelo de <strong>${escapeHtml(v2Author)}</strong>.
+            `;
+
+            // 2. Título del Proyecto
+            let titleText = '';
+            if (scope === 'correlacional') {
+                titleText = `${v1Cap} y ${v2Lower} ${delimitation}`;
+            } else if (scope === 'causal') {
+                titleText = `Influencia de la ${v1Lower} en el ${v2Lower} ${delimitation}`;
+                // Ajuste neutro de artículos para evitar discordancia de género
+                titleText = `${v1Cap} y su influencia en ${v2Lower} ${delimitation}`;
+            } else {
+                titleText = `Diagnóstico de ${v1Lower} y ${v2Lower} ${delimitation}`;
+            }
+            document.getElementById('generatedTitle').textContent = titleText;
+            document.getElementById('matrixTitleHeader').textContent = `Matriz de Consistencia: "${titleText}"`;
+
+            // Contador de palabras del título (Vara Horna)
+            const wordCount = titleText.trim().split(/\s+/).filter(Boolean).length;
+            const badge = document.getElementById('titleWordCountBadge');
+            badge.textContent = `${wordCount} palabras`;
+            if (wordCount >= 12 && wordCount <= 22) {
+                badge.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
+            } else if (wordCount > 22) {
+                badge.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800';
+            } else {
+                badge.className = 'text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-700';
+            }
+
+            // 3. Generación de General y Específicos (Problemas, Objetivos, Hipótesis Hi y H0)
+            let pg = '', og = '', hig = '', h0g = '';
+            let specifics = []; // { pe, oe, hi, h0, label }
+
+            if (scope === 'correlacional') {
+                pg = `¿Cuál es la relación que existe entre ${v1Lower} y ${v2Lower} ${delimitation}?`;
+                og = `${verbGen} la relación que existe entre ${v1Lower} y ${v2Lower} ${delimitation}.`;
+                hig = `Existe relación significativa entre ${v1Lower} y ${v2Lower} ${delimitation}.`;
+                h0g = `No existe relación significativa entre ${v1Lower} y ${v2Lower} ${delimitation}.`;
+
+                if (crossDir === 'v1_to_d2') {
+                    validD2.forEach((dim2, i) => {
+                        const d2Low = formatVarText(dim2, true);
+                        specifics.push({
+                            code: i + 1,
+                            pe: `¿Cuál es la relación que existe entre ${v1Lower} y la dimensión ${d2Low} ${delimitation}?`,
+                            oe: `${verbSpec} la relación que existe entre ${v1Lower} y la dimensión ${d2Low} ${delimitation}.`,
+                            hi: `Existe relación significativa entre ${v1Lower} y la dimensión ${d2Low} ${delimitation}.`,
+                            h0: `No existe relación significativa entre ${v1Lower} y la dimensión ${d2Low} ${delimitation}.`
+                        });
+                    });
+                } else {
+                    validD1.forEach((dim1, i) => {
+                        const d1Low = formatVarText(dim1, true);
+                        specifics.push({
+                            code: i + 1,
+                            pe: `¿Cuál es la relación que existe entre la dimensión ${d1Low} y ${v2Lower} ${delimitation}?`,
+                            oe: `${verbSpec} la relación que existe entre la dimensión ${d1Low} y ${v2Lower} ${delimitation}.`,
+                            hi: `Existe relación significativa entre la dimensión ${d1Low} y ${v2Lower} ${delimitation}.`,
+                            h0: `No existe relación significativa entre la dimensión ${d1Low} y ${v2Lower} ${delimitation}.`
+                        });
+                    });
+                }
+            } else if (scope === 'causal') {
+                pg = `¿De qué manera ${v1Lower} influye en ${v2Lower} ${delimitation}?`;
+                og = `${verbGen} la influencia de ${v1Lower} en ${v2Lower} ${delimitation}.`;
+                hig = `${v1Cap} influye significativamente en ${v2Lower} ${delimitation}.`;
+                h0g = `${v1Cap} no influye significativamente en ${v2Lower} ${delimitation}.`;
+
+                if (crossDir === 'v1_to_d2') {
+                    validD2.forEach((dim2, i) => {
+                        const d2Low = formatVarText(dim2, true);
+                        specifics.push({
+                            code: i + 1,
+                            pe: `¿De qué manera ${v1Lower} influye en la dimensión ${d2Low} ${delimitation}?`,
+                            oe: `${verbSpec} la influencia de ${v1Lower} en la dimensión ${d2Low} ${delimitation}.`,
+                            hi: `${v1Cap} influye significativamente en la dimensión ${d2Low} ${delimitation}.`,
+                            h0: `${v1Cap} no influye significativamente en la dimensión ${d2Low} ${delimitation}.`
+                        });
+                    });
+                } else {
+                    validD1.forEach((dim1, i) => {
+                        const d1Low = formatVarText(dim1, true);
+                        specifics.push({
+                            code: i + 1,
+                            pe: `¿De qué manera la dimensión ${d1Low} influye en ${v2Lower} ${delimitation}?`,
+                            oe: `${verbSpec} la influencia de la dimensión ${d1Low} en ${v2Lower} ${delimitation}.`,
+                            hi: `La dimensión ${d1Low} influye significativamente en ${v2Lower} ${delimitation}.`,
+                            h0: `La dimensión ${d1Low} no influye significativamente en ${v2Lower} ${delimitation}.`
+                        });
+                    });
+                }
+            } else {
+                // Descriptivo Comparativo / Diagnóstico (2 variables sin cruce causal)
+                pg = `¿Cuál es el nivel de ${v1Lower} y ${v2Lower} ${delimitation}?`;
+                og = `${verbGen} el nivel de ${v1Lower} y ${v2Lower} ${delimitation}.`;
+                hig = `El nivel de ${v1Lower} y ${v2Lower} es moderado/alto ${delimitation}.`;
+                h0g = `El nivel de ${v1Lower} y ${v2Lower} no alcanza niveles favorables ${delimitation}.`;
+
+                let idxCounter = 1;
+                validD1.forEach((dim1) => {
+                    const d1Low = formatVarText(dim1, true);
+                    specifics.push({
+                        code: idxCounter++,
+                        pe: `¿Cuál es el nivel de la dimensión ${d1Low} de ${v1Lower} ${delimitation}?`,
+                        oe: `${verbSpec} el nivel de la dimensión ${d1Low} de ${v1Lower} ${delimitation}.`,
+                        hi: `La dimensión ${d1Low} de ${v1Lower} presenta un nivel favorable ${delimitation}.`,
+                        h0: `La dimensión ${d1Low} de ${v1Lower} no presenta un nivel favorable ${delimitation}.`
+                    });
+                });
+                validD2.forEach((dim2) => {
+                    const d2Low = formatVarText(dim2, true);
+                    specifics.push({
+                        code: idxCounter++,
+                        pe: `¿Cuál es el nivel de la dimensión ${d2Low} de ${v2Lower} ${delimitation}?`,
+                        oe: `${verbSpec} el nivel de la dimensión ${d2Low} de ${v2Lower} ${delimitation}.`,
+                        hi: `La dimensión ${d2Low} de ${v2Lower} presenta un nivel favorable ${delimitation}.`,
+                        h0: `La dimensión ${d2Low} de ${v2Lower} no presenta un nivel favorable ${delimitation}.`
+                    });
+                });
+            }
+
+            // Renderizar en Vista Detallada
+            document.getElementById('generalProblemOutput').textContent = pg;
+            document.getElementById('generalObjectiveOutput').textContent = og;
+            document.getElementById('generalHiOutput').textContent = hig;
+            document.getElementById('generalH0Output').textContent = h0g;
+
+            document.getElementById('specificProblemsOutput').innerHTML = specifics.map(item => `
+                <div class="p-3 rounded-xl bg-slate-50/70 border border-slate-100 text-sm text-slate-800 flex items-start gap-2.5">
+                    <span class="font-bold text-unasam-navy text-xs bg-slate-200/80 px-2 py-0.5 rounded shrink-0 mt-0.5">PE${item.code}</span>
+                    <span>${escapeHtml(item.pe)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('specificObjectivesOutput').innerHTML = specifics.map(item => `
+                <div class="p-3 rounded-xl bg-slate-50/70 border border-slate-100 text-sm text-slate-800 flex items-start gap-2.5">
+                    <span class="font-bold text-unasam-navy text-xs bg-slate-200/80 px-2 py-0.5 rounded shrink-0 mt-0.5">OE${item.code}</span>
+                    <span>${escapeHtml(item.oe)}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('specificHypothesesOutput').innerHTML = specifics.map(item => `
+                <div class="p-3 rounded-xl bg-slate-50/70 border border-slate-200/70 text-sm space-y-1.5">
+                    <div class="flex items-start gap-2">
+                        <span class="font-bold text-unasam-blue text-xs bg-blue-100 px-2 py-0.5 rounded shrink-0 mt-0.5">HE${item.code} (H<sub>i</sub>)</span>
+                        <span class="text-slate-800">${escapeHtml(item.hi)}</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="font-bold text-slate-600 text-xs bg-slate-200 px-2 py-0.5 rounded shrink-0 mt-0.5">H<sub>0${item.code}</sub> (H<sub>0</sub>)</span>
+                        <span class="text-slate-600">${escapeHtml(item.h0)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Renderizar en Tabla Matriz de Consistencia
+            const matrixBody = document.getElementById('matrixTableBody');
+            const varsColumnHtml = `
+                <div class="space-y-3">
+                    <div>
+                        <p class="font-bold text-unasam-navy">Variable 1:</p>
+                        <p class="font-semibold">${escapeHtml(v1Cap)}</p>
+                        <p class="text-[10px] text-slate-500 italic mb-1">Sustento: ${escapeHtml(v1Author)}</p>
+                        <ul class="list-disc pl-4 space-y-0.5 text-[11px]">
+                            ${validD1.map(d => `<li>${escapeHtml(d)}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200">
+                        <p class="font-bold text-unasam-navy">Variable 2:</p>
+                        <p class="font-semibold">${escapeHtml(v2Cap)}</p>
+                        <p class="text-[10px] text-slate-500 italic mb-1">Sustento: ${escapeHtml(v2Author)}</p>
+                        <ul class="list-disc pl-4 space-y-0.5 text-[11px]">
+                            ${validD2.map(d => `<li>${escapeHtml(d)}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+
+            matrixBody.innerHTML = `
+                <tr class="bg-slate-50/60">
+                    <td class="border border-slate-300 p-2.5">
+                        <strong class="text-unasam-navy block mb-1">Problema General:</strong>
+                        ${escapeHtml(pg)}
+                    </td>
+                    <td class="border border-slate-300 p-2.5">
+                        <strong class="text-unasam-navy block mb-1">Objetivo General:</strong>
+                        ${escapeHtml(og)}
+                    </td>
+                    <td class="border border-slate-300 p-2.5 space-y-1.5">
+                        <div><strong class="text-unasam-blue">Hipótesis General (H<sub>i</sub>):</strong> ${escapeHtml(hig)}</div>
+                        <div><strong class="text-slate-600">Hipótesis Nula (H<sub>0</sub>):</strong> ${escapeHtml(h0g)}</div>
+                    </td>
+                    <td class="border border-slate-300 p-2.5" rowspan="2">
+                        ${varsColumnHtml}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="border border-slate-300 p-2.5 space-y-2">
+                        <strong class="text-unasam-navy block">Problemas Específicos:</strong>
+                        ${specifics.map(s => `<p><strong>PE${s.code}:</strong> ${escapeHtml(s.pe)}</p>`).join('')}
+                    </td>
+                    <td class="border border-slate-300 p-2.5 space-y-2">
+                        <strong class="text-unasam-navy block">Objetivos Específicos:</strong>
+                        ${specifics.map(s => `<p><strong>OE${s.code}:</strong> ${escapeHtml(s.oe)}</p>`).join('')}
+                    </td>
+                    <td class="border border-slate-300 p-2.5 space-y-2">
+                        <strong class="text-unasam-navy block">Hipótesis Específicas:</strong>
+                        ${specifics.map(s => `
+                            <div class="pb-1.5 border-b border-slate-100 last:border-none">
+                                <p><strong class="text-unasam-blue">HE${s.code}:</strong> ${escapeHtml(s.hi)}</p>
+                                <p class="text-slate-600"><strong>H<sub>0${s.code}</sub>:</strong> ${escapeHtml(s.h0)}</p>
+                            </div>
+                        `).join('')}
+                    </td>
+                </tr>
+            `;
+        }
+
+        // Cambiar entre pestaña de Planteamiento y Tabla Matriz
+        function switchTab(tab) {
+            const docView = document.getElementById('viewDocument');
+            const matView = document.getElementById('viewMatrix');
+            const btnDoc = document.getElementById('tabBtnDocument');
+            const btnMat = document.getElementById('tabBtnMatrix');
+
+            if (tab === 'document') {
+                docView.classList.remove('hidden');
+                matView.classList.add('hidden');
+                btnDoc.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-unasam-navy shadow-sm transition cursor-pointer';
+                btnMat.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-unasam-navy transition cursor-pointer';
+            } else {
+                docView.classList.add('hidden');
+                matView.classList.remove('hidden');
+                btnMat.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-unasam-navy shadow-sm transition cursor-pointer';
+                btnDoc.className = 'px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-600 hover:text-unasam-navy transition cursor-pointer';
+            }
+        }
+
+        // Cargar Ejemplo Real UNASAM
+        function loadExampleData() {
+            document.getElementById('methodAuthor').value = 'Arístides Vara Horna (2012)';
+            document.getElementById('researchScope').value = 'correlacional';
+            document.getElementById('verbGeneral').value = 'Determinar';
+            document.getElementById('verbSpecific').value = 'Establecer';
+            document.querySelector('input[name="crossDirection"][value="v1_to_d2"]').checked = true;
+
+            document.getElementById('v1Name').value = 'Clima organizacional';
+            document.getElementById('v1Author').value = 'Litwin y Stringer (1968)';
+            state.v1Dimensions = [
+                'Estructura organizacional',
+                'Responsabilidad y autonomía',
+                'Recompensa y reconocimiento',
+                'Relaciones interpersonales'
+            ];
+
+            document.getElementById('v2Name').value = 'Desempeño laboral';
+            document.getElementById('v2Author').value = 'Chiavenato (2011)';
+            state.v2Dimensions = [
+                'Productividad laboral',
+                'Calidad del trabajo',
+                'Iniciativa y compromiso'
+            ];
+
+            document.getElementById('population').value = 'colaboradores administrativos';
+            document.getElementById('organization').value = 'de la Municipalidad Provincial de Huaraz';
+            document.getElementById('location').value = 'Huaraz';
+            document.getElementById('year').value = '2026';
+
+            renderDimensionInputs();
+            updateOutputs();
+            showToast('Ejemplo UNASAM cargado correctamente');
+        }
+
+        // Limpiar todos los campos
+        function resetForm() {
+            document.getElementById('v1Name').value = '';
+            document.getElementById('v1Author').value = '';
+            state.v1Dimensions = ['', ''];
+
+            document.getElementById('v2Name').value = '';
+            document.getElementById('v2Author').value = '';
+            state.v2Dimensions = ['', ''];
+
+            document.getElementById('population').value = '';
+            document.getElementById('organization').value = '';
+            document.getElementById('location').value = '';
+            document.getElementById('year').value = '';
+
+            renderDimensionInputs();
+            updateOutputs();
+            showToast('Formulario limpiado');
+        }
+
+        // Copiar todo el contenido formateado al portapapeles
+        function copyAllToClipboard() {
+            const title = document.getElementById('generatedTitle').textContent.trim();
+            const support = document.getElementById('theoreticalSupportOutput').textContent.trim();
+            const pg = document.getElementById('generalProblemOutput').textContent.trim();
+            const og = document.getElementById('generalObjectiveOutput').textContent.trim();
+            const hig = document.getElementById('generalHiOutput').textContent.trim();
+            const h0g = document.getElementById('generalH0Output').textContent.trim();
+
+            const peNodes = Array.from(document.querySelectorAll('#specificProblemsOutput > div')).map(el => el.innerText.replace(/\n+/g, ' ').trim());
+            const oeNodes = Array.from(document.querySelectorAll('#specificObjectivesOutput > div')).map(el => el.innerText.replace(/\n+/g, ' ').trim());
+            const heNodes = Array.from(document.querySelectorAll('#specificHypothesesOutput > div')).map(el => el.innerText.replace(/\n+/g, '\n  ').trim());
+
+            const fullText = [
+                `====================================================`,
+                `PLANTEAMIENTO METODOLÓGICO Y MATRIZ DE CONSISTENCIA`,
+                `====================================================`,
+                ``,
+                `TÍTULO DEL PROYECTO:`,
+                `${title}`,
+                ``,
+                `RESPALDO TEÓRICO Y METODOLÓGICO:`,
+                `${support}`,
+                ``,
+                `1. FORMULACIÓN DEL PROBLEMA`,
+                `Problema General (PG): ${pg}`,
+                `Problemas Específicos:`,
+                ...peNodes.map(p => `- ${p}`),
+                ``,
+                `2. OBJETIVOS DE LA INVESTIGACIÓN`,
+                `Objetivo General (OG): ${og}`,
+                `Objetivos Específicos:`,
+                ...oeNodes.map(o => `- ${o}`),
+                ``,
+                `3. HIPÓTESIS DE INVESTIGACIÓN (Hi y H0)`,
+                `Hipótesis General (Hi): ${hig}`,
+                `Hipótesis Nula General (H0): ${h0g}`,
+                `Hipótesis Específicas:`,
+                ...heNodes.map(h => `- ${h}`),
+                ``,
+                `----------------------------------------------------`,
+                `Generado con el Sistema Metodológico UNASAM - Luis Fernando Cacha Maguiña`
+            ].join('\n');
+
+            const textArea = document.createElement('textarea');
+            textArea.value = fullText;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Planteamiento completo copiado al portapapeles');
+            } catch (err) {
+                showToast('No se pudo copiar automáticamente');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Mostrar notificación Toast
+        let toastTimeout;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            msgEl.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Inicialización al cargar la página
+        window.onload = function() {
+            loadExampleData();
+        };
+    </script>
+</body>
+</html>
